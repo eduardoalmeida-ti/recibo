@@ -1,3 +1,4 @@
+
 async function gerarPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
@@ -19,69 +20,43 @@ async function gerarPDF() {
   const vias = ["Via do Tomador", "Via do Prestador"];
   const logoBase64 = logoFile ? await toBase64(logoFile) : null;
 
-  // Cores para azul claro (exemplo: RGB(173, 216, 230) ou personalize)
-  const azulClaro = { r: 173, g: 216, b: 230 };
-  const raioCaixa = 6; // Raio de arredondamento dos cantos das caixas
-
   for (let i = 0; i < 2; i++) {
     const yOffset = i * 145;
+    doc.setFillColor(240, 240, 240);
+    doc.rect(10, 10 + yOffset, 190, 130, 'F');
 
-    // Caixa geral de fundo (se desejar, pode remover se não precisar)
-    // doc.setFillColor(240, 240, 240);
-    // doc.rect(10, 10 + yOffset, 190, 130, 'F');
+    if (logoBase64) doc.addImage(logoBase64, "PNG", 15, 14 + yOffset, 30, 15);
 
-    // --- Caixa do Título ---
-    doc.setFillColor(azulClaro.r, azulClaro.g, azulClaro.b);
-    doc.roundedRect(20, 18 + yOffset, 170, 18, raioCaixa, raioCaixa, 'F');
     doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(0, 51, 102); // azul escuro para o título
-    doc.text("RECIBO DE PRESTAÇÃO DE SERVIÇO", 105, 30 + yOffset, { align: "center" });
+    doc.text("RECIBO DE PRESTAÇÃO DE SERVIÇO", 105, 20 + yOffset, { align: "center" });
 
-    // Logo opcional, acima ou ao lado do título
-    if (logoBase64) doc.addImage(logoBase64, "PNG", 25, 20 + yOffset, 30, 15);
-
-    // Via no topo direito
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
-    doc.setTextColor(0,0,0);
-    doc.text(vias[i], 180, 24 + yOffset, { align: "right" });
+    doc.text(vias[i], 170, 25 + yOffset);
 
-    // --- Caixa do Conteúdo ---
-    const caixaY = 40 + yOffset;
-    const caixaAltura = 80;
-    doc.setFillColor(azulClaro.r, azulClaro.g, azulClaro.b);
-    doc.roundedRect(20, caixaY, 170, caixaAltura, raioCaixa, raioCaixa, 'F');
-
-    let y = caixaY + 12;
-    doc.setFont("helvetica", "normal");
+    let y = 35 + yOffset;
     doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0);
-    doc.text(`Eu, ${nomePrestador}, inscrito(a) no CPF/CNPJ sob o n.º ${cpfPrestador},`, 30, y);
+    doc.text(`Eu, ${nomePrestador}, inscrito(a) no CPF/CNPJ sob o n.º ${cpfPrestador},`, 15, y);
     y += 8;
-    doc.text(`recebi de ${nomeTomador}, CPF/CNPJ nº ${cpfTomador},`, 30, y);
+    doc.text(`recebi de ${nomeTomador}, CPF/CNPJ nº ${cpfTomador},`, 15, y);
     y += 8;
-    doc.text(`a importância de R$ ${valor}, pelos serviços de ${servico}.`, 30, y);
+    doc.text(`a importância de R$ ${valor}, pelos serviços de ${servico}.`, 15, y);
     y += 8;
-    doc.text(`Não resta nenhum pagamento pendente.`, 30, y);
+    doc.text(`Não resta nenhum pagamento pendente.`, 15, y);
     y += 20;
-    doc.text(`${localidade}, ${dataFormatada}.`, 30, y);
-    y += 20;
-    doc.text(`_______________________________  🖋️`, 30, y);
+    doc.text(`${localidade}, ${dataFormatada}.`, 15, y);
+    y += 25;
+    doc.text(`_______________________________  🖋️`, 15, y);
     y += 6;
-    doc.text(`Assinatura do prestador de serviço`, 30, y);
-
+    doc.text(`Assinatura do prestador de serviço`, 15, y);
     doc.setFontSize(9);
-    doc.text("Este recibo comprova o pagamento pelo serviço descrito acima.", 30, caixaY + caixaAltura - 8);
-
+    doc.text("Este recibo comprova o pagamento pelo serviço descrito acima.", 15, y + 12);
   }
 
-  // Linha de corte
   doc.setLineDashPattern([3, 3], 0);
-  doc.setDrawColor(130, 130, 130);
   doc.line(10, 145, 200, 145);
   doc.setFontSize(9);
-  doc.setTextColor(100,100,100);
   doc.text("---- CORTE AQUI ----", 105, 148, { align: "center" });
 
   doc.save("recibo_visual.pdf");
