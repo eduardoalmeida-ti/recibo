@@ -32,6 +32,16 @@ function formatarCpfCnpj(valor) {
   return valorLimpo;
 }
 
+// Função para formatar data corretamente (SOLUÇÃO DEFINITIVA)
+function formatarDataCorretamente(dataString) {
+  const [ano, mes, dia] = dataString.split('-');
+  const meses = [
+    'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+    'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'
+  ];
+  return `${dia} de ${meses[parseInt(mes) - 1]} de ${ano}`;
+}
+
 // Função para validar campos obrigatórios
 function validarCampos() {
   const camposObrigatorios = [
@@ -62,7 +72,7 @@ function validarCampos() {
   return true;
 }
 
-// Função principal para gerar o PDF (VERSÃO CORRIGIDA - SEM SOBREPOSIÇÃO)
+// Função principal para gerar o PDF
 async function gerarPDF() {
   if (!validarCampos()) return;
 
@@ -85,15 +95,11 @@ async function gerarPDF() {
   const logoInput = document.getElementById("logo");
 
   // Formata a data
-  const dataFormatada = new Date(data).toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric"
-  });
+  const dataFormatada = formatarDataCorretamente(data);
 
-  // Configurações de layout corrigidas
+  // Configurações de layout
   const vias = ["Via do Tomador", "Via do Prestador"];
-  const espacoEntreVias = 150;  // Aumentado para evitar sobreposição
+  const espacoEntreVias = 150;
 
   for (let i = 0; i < 2; i++) {
     const yOffset = i * espacoEntreVias;
@@ -127,7 +133,7 @@ async function gerarPDF() {
     doc.setFont("times", "normal");
     doc.text(vias[i], 160, 24 + yOffset);
 
-    // Corpo do recibo (com espaçamento ajustado)
+    // Corpo do recibo
     doc.setDrawColor(153, 193, 241);
     doc.roundedRect(17, 38 + yOffset, 176, 90, 3, 3);
     let y = 45 + yOffset;
