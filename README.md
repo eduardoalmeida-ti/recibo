@@ -66,7 +66,7 @@ Para configurar e rodar o projeto em seu ambiente de desenvolvimento local:
     ```bash
     cd recibo
     ```
-3.  **Baixe e cole o Miniweb no Diretório do Projeto:** Basta mover os arquivos para a pasta `htdocs` do miniweb, executar o miniweb, e posteriormente abrir o navegador de sua preferência, acessando o endereço `localhost:8080`.
+3.  **Baixe e cole o Miniweb no Diretório do Projeto:** Basta mover os arquivos para a pasta `htdocs` do miniweb, executar o miniweb, e posteriormente abrir o navegador de sua preferência, acessando o endereço `localhost:8000`.
 
 ---
 
